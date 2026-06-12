@@ -18,12 +18,11 @@ extension WidgetHistoryMessage {
          image: String?,
          createDate: Date)
     {
+        // markdown 消息：用与通知横幅完全相同的单一归一化入口转成纯文本（小组件不渲染富文本）。
+        // 普通文本消息：原样透传，绝不经过 Markdown 解析，避免破坏含特殊字符的普通文本。
         let normalizedBody: String?
-        if let body, bodyType == "markdown" {
-            normalizedBody = MarkdownParser(configuration: MarkdownParser.Configuration.clear)
-                .parse(body)
-                .string
-                .replacingOccurrences(of: "\n\n+", with: "\n", options: .regularExpression)
+        if let body, bodyType == Message.BodyType.markdown.rawValue {
+            normalizedBody = MarkdownParser.displayPlainText(fromMarkdown: body)
         } else {
             normalizedBody = body
         }

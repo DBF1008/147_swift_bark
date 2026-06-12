@@ -35,6 +35,12 @@ struct WidgetHistoryMessage: Codable, Identifiable {
     let image: String?
     let createDate: Date
 
+    /// 基础构造器：直接存储传入字段（仅做长度裁剪）。
+    ///
+    /// - Important: `body` 必须已经是「展示用纯文本」。本构造器**不会**对 Markdown 做归一化，
+    ///   仅供占位数据（`SimpleEntry.placeholder`）或调用方已确保为纯文本的场景使用。
+    ///   任何可能包含 Markdown 原文的消息，必须使用带 `bodyType:` 的归一化构造器
+    ///   （见 `WidgetHistorySnapshotSupport.swift`），否则原始标记会泄漏到小组件。
     init(id: String,
          group: String?,
          title: String?,

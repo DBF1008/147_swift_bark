@@ -61,6 +61,23 @@ class MarkdownParser {
         walker.visit(document)
         return walker.attributedString
     }
+
+    /// 将 Markdown 文本归一化为「展示用纯文本」。
+    ///
+    /// 去除 Markdown 标记、扁平为可读文本，并把多余空行折叠为单个换行。
+    /// 这是「Markdown → 展示用纯文本」的唯一实现，通知横幅、小组件快照、自动复制等
+    /// 所有展示链路都应调用此方法，以保证明文 / 密文、横幅 / 归档 / 小组件各链路
+    /// 得到完全一致的可读文本。
+    ///
+    /// - Important: 原始 Markdown 只应保存在 `Message.body`（配合 `bodyType == .markdown`）
+    ///   供应用内列表做富文本重渲染，其余任何展示位置都不应直接使用原文。
+    static func displayPlainText(fromMarkdown markdown: String) -> String {
+        return MarkdownParser(configuration: MarkdownParser.Configuration.clear)
+            .parse(markdown)
+            .string
+            // 将多个连续换行折叠为单个换行，避免空行太多导致展示内容被截断。
+            .replacingOccurrences(of: "\n\n+", with: "\n", options: .regularExpression)
+    }
 }
 
 private struct AttributedStringWalker: MarkupWalker {
