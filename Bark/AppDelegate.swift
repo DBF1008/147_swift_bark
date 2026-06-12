@@ -202,8 +202,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             // 处理添加服务器的逻辑
             if let serverAddress = try? address?.asURL() {
                 let server = Server(address: serverAddress.absoluteString, key: "")
-                ServerManager.shared.addServer(server: server)
-                ServerManager.shared.setCurrentServer(serverId: server.id)
+                let result = ServerManager.shared.addServer(server: server)
+                let activeServer: Server
+                switch result {
+                case .added(let newServer):
+                    activeServer = newServer
+                case .alreadyExists(let existingServer):
+                    activeServer = existingServer
+                }
+                ServerManager.shared.setCurrentServer(serverId: activeServer.id)
                 ServerManager.shared.syncAllServers()
                 HUDSuccess("AddedSuccessfully".localized)
             }

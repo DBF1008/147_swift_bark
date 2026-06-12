@@ -76,11 +76,18 @@ class NewServerViewModel: ViewModel, ViewModelType {
                 switch response {
                 case .success:
                     let server = Server(address: strongSelf.url, key: "")
-                    ServerManager.shared.addServer(server: server)
-                    ServerManager.shared.setCurrentServer(serverId: server.id)
+                    let result = ServerManager.shared.addServer(server: server)
+                    let activeServer: Server
+                    switch result {
+                    case .added(let newServer):
+                        activeServer = newServer
+                    case .alreadyExists(let existingServer):
+                        activeServer = existingServer
+                    }
+                    ServerManager.shared.setCurrentServer(serverId: activeServer.id)
                     ServerManager.shared.syncAllServers()
-                    
-                    strongSelf.pop.accept(URL(string: strongSelf.url)?.host ?? "")
+
+                    strongSelf.pop.accept(activeServer.host)
                     showSnackbar.accept("AddedSuccessfully".localized)
                 case .failure(let error):
                     showSnackbar.accept("\("InvalidServer".localized)\(error.rawString())")

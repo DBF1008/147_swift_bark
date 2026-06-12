@@ -25,7 +25,7 @@ class Server: Codable {
     
     init(id: String = UUID().uuidString, address: String, key: String, state: Client.ClienState = .ok) {
         self.id = id
-        self.address = address
+        self.address = address.normalizedServerAddress()
         self.key = key
         self.state = state
     }
@@ -41,7 +41,7 @@ class Server: Codable {
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
-        address = try container.decode(String.self, forKey: .address)
+        address = try container.decode(String.self, forKey: .address).normalizedServerAddress()
         key = try container.decode(String.self, forKey: .key)
         name = try? container.decode(String?.self, forKey: .name)
         state = .ok
@@ -53,6 +53,8 @@ class ServerManager: NSObject {
     override private init() {
         if let servers: [Server] = Settings[.servers] {
             self.servers = servers
+            // 将规范化后的地址回写，确保旧数据也被统一
+            self.saveServers()
         }
 
         if servers.count <= 0 {
@@ -97,10 +99,23 @@ class ServerManager: NSObject {
         Settings[.currentServerId] = serverId
     }
 
-    /// 添加新的 server
-    func addServer(server: Server) {
+    /// 添加 server 的结果
+    enum AddServerResult {
+        /// 新增了 server
+        case added(Server)
+        /// 已存在相同地址的 server，返回已有的 server
+        case alreadyExists(Server)
+    }
+
+    /// 添加新的 server，如果地址（规范化后）已存在则返回已有的 server 而不是重复添加
+    @discardableResult
+    func addServer(server: Server) -> AddServerResult {
+        if let existing = self.servers.first(where: { $0.address == server.address }) {
+            return .alreadyExists(existing)
+        }
         self.servers.append(server)
         saveServers()
+        return .added(server)
     }
 
     func updateServerKey(server: Server) {
