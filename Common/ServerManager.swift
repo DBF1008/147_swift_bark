@@ -48,6 +48,39 @@ class Server: Codable {
     }
 }
 
+extension Server {
+    /// 规范化服务器地址：去除首尾空白、补全缺失的 scheme、将 scheme/host 转为小写、移除 path 末尾多余的斜杠。
+    /// 用于新增与去重，保证同一服务的不同书写形式（末尾斜杠、大小写等）落到同一份配置。
+    /// 保留 path 子路径、端口、query、fragment；解析不出 host 的非法地址返回 nil。
+    static func normalize(address: String) -> String? {
+        let trimmed = address.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+
+        // 缺少 scheme 时补全为 https，否则 host 会被 URLComponents 解析进 path。
+        let withScheme = trimmed.range(of: "^[a-zA-Z][a-zA-Z0-9+.-]*://", options: .regularExpression) != nil
+            ? trimmed
+            : "https://" + trimmed
+
+        guard var components = URLComponents(string: withScheme),
+              let host = components.host, !host.isEmpty
+        else {
+            return nil
+        }
+
+        components.scheme = components.scheme?.lowercased()
+        components.host = host.lowercased()
+
+        // 移除 path 末尾多余的斜杠（根路径归为空），使 .../bark 与 .../bark/ 等价。
+        var path = components.path
+        while path.hasSuffix("/") {
+            path.removeLast()
+        }
+        components.path = path
+
+        return components.string
+    }
+}
+
 class ServerManager: NSObject {
     static let shared = ServerManager()
     override private init() {
@@ -97,10 +130,27 @@ class ServerManager: NSObject {
         Settings[.currentServerId] = serverId
     }
 
-    /// 添加新的 server
-    func addServer(server: Server) {
-        self.servers.append(server)
+    /// 添加新的 server。
+    /// 地址会先经过规范化；若已存在相同规范化地址的 server，则不重复添加，直接返回该已存在的 server
+    /// （保留其 id / key / name）。这样手输、扫码、深链接三条录入路径都落在同一份去重后的配置上。
+    /// - Returns: 实际生效的 server —— 新增的那个，或命中去重的已存在 server。
+    @discardableResult
+    func addServer(server: Server) -> Server {
+        let normalizedAddress = Server.normalize(address: server.address) ?? server.address
+
+        // 去重键为规范化地址（服务身份是地址，不含 key）。
+        if let existing = self.servers.first(where: {
+            (Server.normalize(address: $0.address) ?? $0.address) == normalizedAddress
+        }) {
+            return existing
+        }
+
+        // address 不可变，需用规范化后的地址新建对象，沿用原 id。
+        let normalizedServer = Server(id: server.id, address: normalizedAddress, key: server.key, state: server.state)
+        normalizedServer.name = server.name
+        self.servers.append(normalizedServer)
         saveServers()
+        return normalizedServer
     }
 
     func updateServerKey(server: Server) {

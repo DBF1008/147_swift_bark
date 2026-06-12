@@ -60,27 +60,26 @@ class NewServerViewModel: ViewModel, ViewModelType {
             .asObservable()
             .flatMapLatest { [weak self] url -> Observable<Result<JSON, ApiError>> in
                 showKeyboard.accept(false)
-                if let _ = URL(string: url) {
-                    guard let strongSelf = self else { return .empty() }
-                    strongSelf.url = url
-                    return BarkApi.provider
-                        .request(.ping(baseURL: url))
-                        .filterResponseError()
-                } else {
+                guard let strongSelf = self else { return .empty() }
+                // 规范化地址，保证去重与后续注册落在同一份正确配置上
+                guard let normalized = Server.normalize(address: url) else {
                     showSnackbar.accept("InvalidURL".localized)
                     return .empty()
                 }
+                strongSelf.url = normalized
+                return BarkApi.provider
+                    .request(.ping(baseURL: normalized))
+                    .filterResponseError()
             }
             .subscribe(onNext: { [weak self] response in
                 guard let strongSelf = self else { return }
                 switch response {
                 case .success:
-                    let server = Server(address: strongSelf.url, key: "")
-                    ServerManager.shared.addServer(server: server)
-                    ServerManager.shared.setCurrentServer(serverId: server.id)
+                    let saved = ServerManager.shared.addServer(server: Server(address: strongSelf.url, key: ""))
+                    ServerManager.shared.setCurrentServer(serverId: saved.id)
                     ServerManager.shared.syncAllServers()
                     
-                    strongSelf.pop.accept(URL(string: strongSelf.url)?.host ?? "")
+                    strongSelf.pop.accept(ServerManager.shared.currentServer.host)
                     showSnackbar.accept("AddedSuccessfully".localized)
                 case .failure(let error):
                     showSnackbar.accept("\("InvalidServer".localized)\(error.rawString())")

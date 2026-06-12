@@ -77,6 +77,7 @@
 		063AE3EB2F74E97C00048718 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 065752C02CB6844A001426D8 /* Localizable.xcstrings */; };
 		063AE3F82F7511AF00048718 /* WidgetHistorySnapshotSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06697FF52F70ED9600C4680E /* WidgetHistorySnapshotSupport.swift */; };
 		063B909B272149BF00431EC2 /* HomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063B909A272149BF00431EC2 /* HomeViewModelTests.swift */; };
+		06FEEDED2F70ED9500C46801 /* ServerManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FEEDED2F70ED9500C46802 /* ServerManagerTests.swift */; };
 		0642B55A27EB13F100453D91 /* MutableTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642B55927EB13F100453D91 /* MutableTextCell.swift */; };
 		0642B55C27EB149900453D91 /* MutableTextCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642B55B27EB149900453D91 /* MutableTextCellViewModel.swift */; };
 		0647DB682CE604AA00102066 /* MessageSettingFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0647DB672CE604AA00102066 /* MessageSettingFooter.swift */; };
@@ -349,6 +350,7 @@
 		0637FA8920E0D58800E80174 /* NewServerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewServerViewController.swift; sourceTree = "<group>"; };
 		0637FA8B20E0D7A700E80174 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		063B909A272149BF00431EC2 /* HomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTests.swift; sourceTree = "<group>"; };
+		06FEEDED2F70ED9500C46802 /* ServerManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerManagerTests.swift; sourceTree = "<group>"; };
 		0642B55927EB13F100453D91 /* MutableTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableTextCell.swift; sourceTree = "<group>"; };
 		0642B55B27EB149900453D91 /* MutableTextCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableTextCellViewModel.swift; sourceTree = "<group>"; };
 		0647DB672CE604AA00102066 /* MessageSettingFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSettingFooter.swift; sourceTree = "<group>"; };
@@ -802,6 +804,7 @@
 				06EE1FD226843E9300586708 /* BarkTests.swift */,
 				06EE1FD426843E9300586708 /* Info.plist */,
 				063B909A272149BF00431EC2 /* HomeViewModelTests.swift */,
+				06FEEDED2F70ED9500C46802 /* ServerManagerTests.swift */,
 				068A4B952D2E11CD00982449 /* MessageDeleteTimeRangeTest.swift */,
 			);
 			path = BarkTests;
@@ -1501,6 +1504,7 @@
 				068A4B962D2E11CD00982449 /* MessageDeleteTimeRangeTest.swift in Sources */,
 				06EE1FD326843E9300586708 /* BarkTests.swift in Sources */,
 				063B909B272149BF00431EC2 /* HomeViewModelTests.swift in Sources */,
+				06FEEDED2F70ED9500C46801 /* ServerManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
