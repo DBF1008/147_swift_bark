@@ -86,7 +86,13 @@ extension AppDelegate {
         }
     }
     
-    // 处理 Notification Service Extension 保存的待处理消息, 将其存入 Realm 数据库
+    /// 处理 Notification Service Extension 保存的待处理消息, 将其存入 Realm 数据库
+    ///
+    /// 使用 `PendingMessageImporter` 进行容错导入:
+    /// - 仅在消息成功入库后才删除对应的 plist 文件
+    /// - 已过期消息的 plist 文件会被清理
+    /// - 不可解析的文件在宽限期 (7天) 过后才会被清理，未超期的保留重试
+    /// - 批量写入失败时自动回退为逐条写入，避免一条坏消息拖垮整批
     func processPendingMessages() async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             pendingMessageProcessingQueue.async {
@@ -96,67 +102,16 @@ extension AppDelegate {
                     return
                 }
 
-                guard let realm = try? Realm() else {
-                    return
-                }
+                let realm = try? Realm()
+                let pendingDir = groupUrl.appendingPathComponent("pending_messages")
 
-                let pendingMessagesDir = groupUrl.appendingPathComponent("pending_messages")
-                let plistFiles: [URL]
-                if FileManager.default.fileExists(atPath: pendingMessagesDir.path),
-                   let fileUrls = try? FileManager.default.contentsOfDirectory(
-                       at: pendingMessagesDir,
-                       includingPropertiesForKeys: nil,
-                       options: [.skipsHiddenFiles]
-                   )
-                {
-                    plistFiles = fileUrls.filter { $0.pathExtension == "plist" }
-                } else {
-                    plistFiles = []
-                }
+                let importer = PendingMessageImporter(
+                    realm: realm,
+                    pendingDir: pendingDir
+                )
+                let result = importer.process()
 
-                var messagesToAdd: [Message] = []
-                let now = Date()
-                var didChangeMessages = false
-
-                for plistUrl in plistFiles {
-                    guard let dict = NSDictionary(contentsOf: plistUrl) as? [String: Any] else {
-                        continue
-                    }
-
-                    let message = Message(dict: dict)
-                    if let expireDate = message.expireDate, expireDate <= now {
-                        continue
-                    }
-                    messagesToAdd.append(message)
-                }
-
-                let expiredMessages = realm.objects(Message.self)
-                    .filter("expireDate != nil AND expireDate <= %@", now)
-
-                if !messagesToAdd.isEmpty || !expiredMessages.isEmpty {
-                    do {
-                        try realm.write {
-                            if !messagesToAdd.isEmpty {
-                                didChangeMessages = true
-                                for message in messagesToAdd {
-                                    realm.add(message, update: .all)
-                                }
-                            }
-                            if !expiredMessages.isEmpty {
-                                didChangeMessages = true
-                                realm.delete(expiredMessages)
-                            }
-                        }
-                    } catch {
-                        // 一般不会失败，真失败了算你小子运气差
-                    }
-                }
-
-                for plistUrl in plistFiles {
-                    try? FileManager.default.removeItem(at: plistUrl)
-                }
-
-                if didChangeMessages {
+                if result.didChange {
                     WidgetHistorySnapshotStore.shared.refreshFromRealmAsync()
                     self.notifyMessagesDidChange()
                 }

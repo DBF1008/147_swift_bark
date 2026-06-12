@@ -231,6 +231,8 @@
 		3428272069AFAFE2C683FEB0 /* libPods-Bark.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CCC722470308049D180876C7 /* libPods-Bark.a */; };
 		879AE4D4178855A9672009E4 /* libPods-NotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7F8BDFAA047451561798F58 /* libPods-NotificationServiceExtension.a */; };
 		88757E3ACE0EA6A48577C958 /* libPods-NotificationContentExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6616B1ACAA7E422700D90C2B /* libPods-NotificationContentExtension.a */; };
+		06A1B2C3D4E5F60700AABB02 /* PendingMessageImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1B2C3D4E5F60700AABB01 /* PendingMessageImporter.swift */; };
+		06A1B2C3D4E5F60700AABB04 /* PendingMessageImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1B2C3D4E5F60700AABB03 /* PendingMessageImporterTests.swift */; };
 		B963F7D5BA7AC2571E71EF66 /* libPods-BarkTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 76381A752CCCD4DA6BB2A566 /* libPods-BarkTests.a */; };
 /* End PBXBuildFile section */
 
@@ -436,6 +438,8 @@
 		06E944772C0701F300AC86AB /* IconProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconProcessor.swift; sourceTree = "<group>"; };
 		06E944792C0704E500AC86AB /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
 		06E9447B2C07052F00AC86AB /* ImageProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessor.swift; sourceTree = "<group>"; };
+		06A1B2C3D4E5F60700AABB01 /* PendingMessageImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingMessageImporter.swift; sourceTree = "<group>"; };
+		06A1B2C3D4E5F60700AABB03 /* PendingMessageImporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingMessageImporterTests.swift; sourceTree = "<group>"; };
 		06EE1FD026843E9300586708 /* BarkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BarkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06EE1FD226843E9300586708 /* BarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarkTests.swift; sourceTree = "<group>"; };
 		06EE1FD426843E9300586708 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -692,6 +696,7 @@
 				066B10002F73F00100C4680E /* WidgetHistoryModels.swift */,
 				06697FED2F70ED9600C4680E /* WidgetHistorySnapshotStore.swift */,
 				06697FF52F70ED9600C4680E /* WidgetHistorySnapshotSupport.swift */,
+				06A1B2C3D4E5F60700AABB01 /* PendingMessageImporter.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -803,6 +808,7 @@
 				06EE1FD426843E9300586708 /* Info.plist */,
 				063B909A272149BF00431EC2 /* HomeViewModelTests.swift */,
 				068A4B952D2E11CD00982449 /* MessageDeleteTimeRangeTest.swift */,
+				06A1B2C3D4E5F60700AABB03 /* PendingMessageImporterTests.swift */,
 			);
 			path = BarkTests;
 			sourceTree = "<group>";
@@ -1447,6 +1453,7 @@
 				066B10012F73F00100C4680E /* WidgetHistoryModels.swift in Sources */,
 				06697FF02F70ED9600C4680E /* WidgetHistorySnapshotStore.swift in Sources */,
 				06697FF42F70ED9600C4680E /* WidgetHistorySnapshotSupport.swift in Sources */,
+				06A1B2C3D4E5F60700AABB02 /* PendingMessageImporter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1501,6 +1508,7 @@
 				068A4B962D2E11CD00982449 /* MessageDeleteTimeRangeTest.swift in Sources */,
 				06EE1FD326843E9300586708 /* BarkTests.swift in Sources */,
 				063B909B272149BF00431EC2 /* HomeViewModelTests.swift in Sources */,
+				06A1B2C3D4E5F60700AABB04 /* PendingMessageImporterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
