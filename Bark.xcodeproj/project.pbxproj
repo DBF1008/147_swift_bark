@@ -209,6 +209,9 @@
 		06E944782C0701F300AC86AB /* IconProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E944772C0701F300AC86AB /* IconProcessor.swift */; };
 		06E9447A2C0704E500AC86AB /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E944792C0704E500AC86AB /* ImageDownloader.swift */; };
 		06E9447C2C07052F00AC86AB /* ImageProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E9447B2C07052F00AC86AB /* ImageProcessor.swift */; };
+		AA0000010000000000000001 /* ImageFormatDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000030000000000000003 /* ImageFormatDetector.swift */; };
+		AA0000020000000000000002 /* ImageFormatDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000030000000000000003 /* ImageFormatDetector.swift */; };
+		AA0000050000000000000005 /* ImageFormatDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000040000000000000004 /* ImageFormatDetectorTests.swift */; };
 		06EE1FD326843E9300586708 /* BarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EE1FD226843E9300586708 /* BarkTests.swift */; };
 		06EEF333291CCFF400CA228A /* CryptoSettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EEF332291CCFF400CA228A /* CryptoSettingController.swift */; };
 		06EEF335291CD00000CA228A /* CryptoSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EEF334291CD00000CA228A /* CryptoSettingViewModel.swift */; };
@@ -436,6 +439,8 @@
 		06E944772C0701F300AC86AB /* IconProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconProcessor.swift; sourceTree = "<group>"; };
 		06E944792C0704E500AC86AB /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
 		06E9447B2C07052F00AC86AB /* ImageProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessor.swift; sourceTree = "<group>"; };
+		AA0000030000000000000003 /* ImageFormatDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFormatDetector.swift; sourceTree = "<group>"; };
+		AA0000040000000000000004 /* ImageFormatDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFormatDetectorTests.swift; sourceTree = "<group>"; };
 		06EE1FD026843E9300586708 /* BarkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BarkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06EE1FD226843E9300586708 /* BarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarkTests.swift; sourceTree = "<group>"; };
 		06EE1FD426843E9300586708 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -790,6 +795,7 @@
 				06E9447B2C07052F00AC86AB /* ImageProcessor.swift */,
 				06D69E402C11983E00161A35 /* CallProcessor.swift */,
 				06E944792C0704E500AC86AB /* ImageDownloader.swift */,
+				AA0000030000000000000003 /* ImageFormatDetector.swift */,
 				06BCAE5A2CDB25120092867A /* MuteProcessor.swift */,
 				069C6CA32ED03C72007244BB /* MarkdownProcessor.swift */,
 			);
@@ -803,6 +809,7 @@
 				06EE1FD426843E9300586708 /* Info.plist */,
 				063B909A272149BF00431EC2 /* HomeViewModelTests.swift */,
 				068A4B952D2E11CD00982449 /* MessageDeleteTimeRangeTest.swift */,
+				AA0000040000000000000004 /* ImageFormatDetectorTests.swift */,
 			);
 			path = BarkTests;
 			sourceTree = "<group>";
@@ -1487,6 +1494,7 @@
 				06D69E412C11983E00161A35 /* CallProcessor.swift in Sources */,
 				06B11591247BC132006D91FB /* Message.swift in Sources */,
 				06E9447C2C07052F00AC86AB /* ImageProcessor.swift in Sources */,
+				AA0000010000000000000001 /* ImageFormatDetector.swift in Sources */,
 				06E9446A2C06E4A200AC86AB /* CiphertextProcessor.swift in Sources */,
 				06E944712C06FF4C00AC86AB /* AutoCopyProcessor.swift in Sources */,
 				0687F2A92CCB791A00B2A52F /* UIFont+Extension.swift in Sources */,
@@ -1501,6 +1509,8 @@
 				068A4B962D2E11CD00982449 /* MessageDeleteTimeRangeTest.swift in Sources */,
 				06EE1FD326843E9300586708 /* BarkTests.swift in Sources */,
 				063B909B272149BF00431EC2 /* HomeViewModelTests.swift in Sources */,
+				AA0000020000000000000002 /* ImageFormatDetector.swift in Sources */,
+				AA0000050000000000000005 /* ImageFormatDetectorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

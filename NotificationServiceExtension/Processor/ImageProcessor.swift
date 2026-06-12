@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import MobileCoreServices
+import UserNotifications
 
 class ImageProcessor: NotificationContentProcessor {
     func process(identifier: String, content bestAttemptContent: UNMutableNotificationContent) async throws -> UNMutableNotificationContent {
@@ -17,18 +17,26 @@ class ImageProcessor: NotificationContentProcessor {
         else {
             return bestAttemptContent
         }
-        
-        let copyDestUrl = URL(fileURLWithPath: imageFileUrl).appendingPathExtension(".tmp")
-        // 将图片缓存复制一份，推送使用完后会自动删除，但图片缓存需要留着以后在历史记录里查看
-        try? FileManager.default.copyItem(
-            at: URL(fileURLWithPath: imageFileUrl),
-            to: copyDestUrl
-        )
-        
+
+        let sourceUrl = URL(fileURLWithPath: imageFileUrl)
+
+        // 通过 Magic Bytes 检测图片真实格式，确保扩展名和 UTI 类型匹配
+        let formatInfo = ImageFormatDetector.detectFormat(fromFilePath: imageFileUrl)
+
+        // 用正确的扩展名生成临时文件路径
+        // 推送使用完后会自动删除临时文件，但 Kingfisher 缓存需要保留以供历史记录查看
+        let tmpDir = FileManager.default.temporaryDirectory
+        let copyDestUrl = tmpDir
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension(formatInfo.fileExtension)
+
+        try? FileManager.default.copyItem(at: sourceUrl, to: copyDestUrl)
+
+        // 使用检测到的真实 UTI 类型创建附件，避免硬编码 kUTTypePNG 导致格式不匹配
         if let attachment = try? UNNotificationAttachment(
             identifier: "image",
             url: copyDestUrl,
-            options: [UNNotificationAttachmentOptionsTypeHintKey: kUTTypePNG]
+            options: [UNNotificationAttachmentOptionsTypeHintKey: formatInfo.utiIdentifier]
         ) {
             bestAttemptContent.attachments = [attachment]
         }
