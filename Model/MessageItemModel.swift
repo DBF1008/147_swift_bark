@@ -55,8 +55,8 @@ class MessageItemModel {
         let url = message.url ?? ""
         
         let text: NSMutableAttributedString
-        if message.type == .markdown {
-            text = NSMutableAttributedString(attributedString: MarkdownParser().parse(body))
+        if message.type == .markdown, let markdownSource = message.markdownSource, !markdownSource.isEmpty {
+            text = NSMutableAttributedString(attributedString: MarkdownParser().parse(markdownSource))
         } else {
             text = NSMutableAttributedString(
                 string: body,

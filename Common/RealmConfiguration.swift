@@ -13,7 +13,7 @@ let kRealmDefaultConfiguration = {
     let fileUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("bark.realm")
     let config = Realm.Configuration(
         fileURL: fileUrl,
-        schemaVersion: 18,
+        schemaVersion: 19,
         migrationBlock: { migration, oldSchemaVersion in
             switch oldSchemaVersion {
             case 0...13:
@@ -31,6 +31,28 @@ let kRealmDefaultConfiguration = {
                 }
             default:
                 break
+            }
+
+            // schema 18 → 19: 将 markdown 消息的 body 从原始标记文本归一化为纯文本，
+            // 原始 markdown 源文本迁移到 markdownSource 字段
+            if oldSchemaVersion < 19 {
+                migration.enumerateObjects(ofType: Message.className()) { oldObject, newObject in
+                    guard let oldObject, let newObject else { return }
+                    guard let bodyType = oldObject["bodyType"] as? String,
+                          bodyType == "markdown",
+                          let body = oldObject["body"] as? String
+                    else {
+                        return
+                    }
+                    // 原始 markdown 源文本存入 markdownSource
+                    newObject["markdownSource"] = body
+                    // body 替换为渲染后的纯文本
+                    let plainText = MarkdownParser(configuration: MarkdownParser.Configuration.clear)
+                        .parse(body)
+                        .string
+                        .replacingOccurrences(of: "\n\n+", with: "\n", options: .regularExpression)
+                    newObject["body"] = plainText
+                }
             }
         },
         objectTypes: [Message.self]

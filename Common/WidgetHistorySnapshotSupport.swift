@@ -38,12 +38,13 @@ extension WidgetHistoryMessage {
     }
 
     init(message: Message) {
+        // message.body 已经是归一化后的纯文本，无需再次转换
         self.init(id: message.id,
                   group: message.group,
                   title: message.title,
                   subtitle: message.subtitle,
                   body: message.body,
-                  bodyType: message.bodyType,
+                  bodyType: nil,
                   image: message.image,
                   createDate: message.createDate ?? Date())
     }

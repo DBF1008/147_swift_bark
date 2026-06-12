@@ -57,7 +57,13 @@ class ArchiveProcessor: NotificationContentProcessor {
                 messageDict["subtitle"] = subtitle
             }
             if let markdown = markdown, !markdown.isEmpty {
-                messageDict["body"] = markdown
+                // 将 markdown 渲染为纯文本存入 body，保证所有展示链路看到一致的可读文本
+                let renderedPlainText = MarkdownParser(configuration: MarkdownParser.Configuration.clear)
+                    .parse(markdown)
+                    .string
+                    .replacingOccurrences(of: "\n\n+", with: "\n", options: .regularExpression)
+                messageDict["body"] = renderedPlainText
+                messageDict["markdownSource"] = markdown
                 messageDict["bodyType"] = "markdown"
             } else if let body = body {
                 messageDict["body"] = body
@@ -103,7 +109,7 @@ class ArchiveProcessor: NotificationContentProcessor {
                 title: title,
                 subtitle: subtitle,
                 body: messageDict["body"] as? String,
-                bodyType: messageDict["bodyType"] as? String,
+                bodyType: nil,
                 image: image,
                 createDate: createDate
             )

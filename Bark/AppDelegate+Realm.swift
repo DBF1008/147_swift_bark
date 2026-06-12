@@ -21,9 +21,12 @@ extension AppDelegate {
     func setupRealm() {
         // 先执行数据库迁移
         migrateRealmDatabase()
-        
+
         // Tell Realm to use this new configuration object for the default Realm
         Realm.Configuration.defaultConfiguration = kRealmDefaultConfiguration
+
+        // 迁移后刷新小组件快照，确保 body 归一化后的数据同步到 Widget
+        WidgetHistorySnapshotStore.shared.refreshFromRealmAsync()
     }
 
     func migrateRealmDatabase() {

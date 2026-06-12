@@ -20,6 +20,7 @@ class Message: Object {
     @Persisted var subtitle: String?
     @Persisted var body: String?
     @Persisted var bodyType: String?
+    @Persisted var markdownSource: String?
     @Persisted var url: String?
     @Persisted var image: String?
     @Persisted(indexed: true) var group: String?
@@ -49,6 +50,7 @@ class Message: Object {
         self.subtitle = json["subtitle"].string
         self.body = json["body"].string
         self.bodyType = json["bodyType"].string
+        self.markdownSource = json["markdownSource"].string
         self.url = json["url"].string
         self.image = json["image"].string
         self.group = json["group"].string
@@ -74,6 +76,9 @@ class Message: Object {
         }
         if let bodyType = dict["bodyType"] as? String {
             self.bodyType = bodyType
+        }
+        if let markdownSource = dict["markdownSource"] as? String {
+            self.markdownSource = markdownSource
         }
         if let url = dict["url"] as? String {
             self.url = url
