@@ -41,12 +41,15 @@ class MessageSettingsViewModel: ViewModel, ViewModelType {
                 guard let realm = try? Realm() else {
                     return nil
                 }
-                try? realm.write {
-                    for message in arr {
-                        guard let messageObject = Message(json: message) else {
-                            continue
-                        }
-                        realm.add(messageObject, update: .modified)
+                // 解析为未托管 Message，再交给统一的导入逻辑（过期过滤 + 覆盖 + 清理库内过期）
+                let messages = arr.compactMap { Message(json: $0) }
+                let changed = realm.importMessages(messages)
+                if changed {
+                    // 刷新小组件快照（内部切到自有队列，线程安全）
+                    WidgetHistorySnapshotStore.shared.refreshFromRealmAsync()
+                    // 通知消息列表页刷新：导入发生在设置页，列表页在另一个 tab，必须显式发送变更通知
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: kBarkMessagesDidChangeNotification, object: nil)
                     }
                 }
                 return ()

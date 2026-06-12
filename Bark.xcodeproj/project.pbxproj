@@ -145,6 +145,8 @@
 		06BBB89125650CCF0076F63E /* ArchiveSettingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C5953224811505006B98F3 /* ArchiveSettingManager.swift */; };
 		06BBB896256518760076F63E /* NewServerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BBB895256518760076F63E /* NewServerViewModel.swift */; };
 		06BBB8B72567AC140076F63E /* MessageSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BBB8B62567AC140076F63E /* MessageSettingsViewModel.swift */; };
+		B369023AAB5C7877DE783756 /* Realm+MessageImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5849A6CE8E91D0486E1531EB /* Realm+MessageImport.swift */; };
+		AF5C07FE65E06E10DC0C70ED /* MessageImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A78715979EE03F5A74134362 /* MessageImportTests.swift */; };
 		06BBB8BC2567B3AD0076F63E /* ArchiveSettingCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BBB8BB2567B3AD0076F63E /* ArchiveSettingCellViewModel.swift */; };
 		06BBB8C12567B3EF0076F63E /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BBB8C02567B3EF0076F63E /* BaseTableViewCell.swift */; };
 		06BBB8C92567B6730076F63E /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BBB8C82567B6730076F63E /* Operators.swift */; };
@@ -379,6 +381,8 @@
 		06697FDA2F70ED9400C4680E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		06697FDC2F70ED9400C4680E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		06697FED2F70ED9600C4680E /* WidgetHistorySnapshotStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetHistorySnapshotStore.swift; sourceTree = "<group>"; };
+		5849A6CE8E91D0486E1531EB /* Realm+MessageImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Realm+MessageImport.swift"; sourceTree = "<group>"; };
+		A78715979EE03F5A74134362 /* MessageImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageImportTests.swift; sourceTree = "<group>"; };
 		06697FF52F70ED9600C4680E /* WidgetHistorySnapshotSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetHistorySnapshotSupport.swift; sourceTree = "<group>"; };
 		066B10002F73F00100C4680E /* WidgetHistoryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetHistoryModels.swift; sourceTree = "<group>"; };
 		066DF4812D2D31A30092B04E /* MessageDeleteTimeRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDeleteTimeRange.swift; sourceTree = "<group>"; };
@@ -692,6 +696,7 @@
 				066B10002F73F00100C4680E /* WidgetHistoryModels.swift */,
 				06697FED2F70ED9600C4680E /* WidgetHistorySnapshotStore.swift */,
 				06697FF52F70ED9600C4680E /* WidgetHistorySnapshotSupport.swift */,
+				5849A6CE8E91D0486E1531EB /* Realm+MessageImport.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -803,6 +808,7 @@
 				06EE1FD426843E9300586708 /* Info.plist */,
 				063B909A272149BF00431EC2 /* HomeViewModelTests.swift */,
 				068A4B952D2E11CD00982449 /* MessageDeleteTimeRangeTest.swift */,
+				A78715979EE03F5A74134362 /* MessageImportTests.swift */,
 			);
 			path = BarkTests;
 			sourceTree = "<group>";
@@ -1438,6 +1444,7 @@
 				1E73F99E2C282822002BF649 /* SectionViewController-iPad.swift in Sources */,
 				0689CF4C2C7484A7007203A6 /* BarkTabBarController.swift in Sources */,
 				06BBB8B72567AC140076F63E /* MessageSettingsViewModel.swift in Sources */,
+				B369023AAB5C7877DE783756 /* Realm+MessageImport.swift in Sources */,
 				06BBB8C12567B3EF0076F63E /* BaseTableViewCell.swift in Sources */,
 				0661A543204FDA4100965E4E /* AppDelegate.swift in Sources */,
 				06EF49172D682AC4008B91D2 /* OptionsProvider.swift in Sources */,
@@ -1499,6 +1506,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				068A4B962D2E11CD00982449 /* MessageDeleteTimeRangeTest.swift in Sources */,
+				AF5C07FE65E06E10DC0C70ED /* MessageImportTests.swift in Sources */,
 				06EE1FD326843E9300586708 /* BarkTests.swift in Sources */,
 				063B909B272149BF00431EC2 /* HomeViewModelTests.swift in Sources */,
 			);
