@@ -87,6 +87,10 @@ extension AppDelegate {
     }
     
     // 处理 Notification Service Extension 保存的待处理消息, 将其存入 Realm 数据库
+    //
+    // 容错约定（详见 PendingMessageImporter）：
+    // - 只有成功入库后才删除对应文件；数据库短暂异常时保留文件，等待下次重试
+    // - 无法解析的坏文件、已过期的消息按可预期方式清理（删除），且不拖累正常消息的清理节奏
     func processPendingMessages() async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             pendingMessageProcessingQueue.async {
@@ -96,67 +100,32 @@ extension AppDelegate {
                     return
                 }
 
+                // Realm 不可用时直接返回，不删除任何文件，待下次重试
                 guard let realm = try? Realm() else {
                     return
                 }
 
-                let pendingMessagesDir = groupUrl.appendingPathComponent("pending_messages")
-                let plistFiles: [URL]
-                if FileManager.default.fileExists(atPath: pendingMessagesDir.path),
-                   let fileUrls = try? FileManager.default.contentsOfDirectory(
-                       at: pendingMessagesDir,
-                       includingPropertiesForKeys: nil,
-                       options: [.skipsHiddenFiles]
-                   )
-                {
-                    plistFiles = fileUrls.filter { $0.pathExtension == "plist" }
-                } else {
-                    plistFiles = []
-                }
-
-                var messagesToAdd: [Message] = []
                 let now = Date()
-                var didChangeMessages = false
+                let pendingMessagesDir = groupUrl.appendingPathComponent("pending_messages")
 
-                for plistUrl in plistFiles {
-                    guard let dict = NSDictionary(contentsOf: plistUrl) as? [String: Any] else {
-                        continue
+                let result = PendingMessageImporter.importPendingMessages(in: pendingMessagesDir, now: now) { messages in
+                    let expiredMessages = realm.objects(Message.self)
+                        .filter("expireDate != nil AND expireDate <= %@", now)
+                    guard !messages.isEmpty || !expiredMessages.isEmpty else {
+                        return false
                     }
-
-                    let message = Message(dict: dict)
-                    if let expireDate = message.expireDate, expireDate <= now {
-                        continue
-                    }
-                    messagesToAdd.append(message)
-                }
-
-                let expiredMessages = realm.objects(Message.self)
-                    .filter("expireDate != nil AND expireDate <= %@", now)
-
-                if !messagesToAdd.isEmpty || !expiredMessages.isEmpty {
-                    do {
-                        try realm.write {
-                            if !messagesToAdd.isEmpty {
-                                didChangeMessages = true
-                                for message in messagesToAdd {
-                                    realm.add(message, update: .all)
-                                }
-                            }
-                            if !expiredMessages.isEmpty {
-                                didChangeMessages = true
-                                realm.delete(expiredMessages)
-                            }
+                    try realm.write {
+                        for message in messages {
+                            realm.add(message, update: .all)
                         }
-                    } catch {
-                        // 一般不会失败，真失败了算你小子运气差
+                        if !expiredMessages.isEmpty {
+                            realm.delete(expiredMessages)
+                        }
                     }
+                    return true
                 }
 
-                for plistUrl in plistFiles {
-                    try? FileManager.default.removeItem(at: plistUrl)
-                }
-
-                if didChangeMessages {
+                if result.importedCount > 0 || result.didChangeStore {
                     WidgetHistorySnapshotStore.shared.refreshFromRealmAsync()
                     self.notifyMessagesDidChange()
                 }
@@ -168,5 +137,112 @@ extension AppDelegate {
         DispatchQueue.main.async {
             NotificationCenter.default.post(name: kBarkMessagesDidChangeNotification, object: nil)
         }
+    }
+}
+
+/// 把 Notification Service Extension 写入待处理目录(pending_messages)的 plist 消息导入存储。
+///
+/// 容错策略：每个文件根据自身状态获得**确定且独立**的结局，彼此互不拖累：
+/// - 无法解析的坏文件：总是删除（不可重试，留着只会一直失败并拖慢清理节奏）
+/// - 解析成功但已过期的消息：不入库，删除文件
+/// - 解析成功且未过期的消息：入库**成功才删除**文件；入库失败则**保留**文件等待下次重试
+///
+/// 通过注入 `archive` 闭包隔离存储依赖，使核心逻辑无需真实数据库即可进行单元测试。
+enum PendingMessageImporter {
+    struct Result: Equatable {
+        /// 成功入库的有效消息数量
+        var importedCount = 0
+        /// 删除的坏文件数量
+        var deletedCorruptCount = 0
+        /// 删除的已过期文件数量
+        var deletedExpiredCount = 0
+        /// 入库失败、保留等待重试的文件数量
+        var retainedCount = 0
+        /// archive 报告存储发生了变更（例如清理了存储内已过期消息）
+        var didChangeStore = false
+    }
+
+    /// 把待处理目录中的消息导入存储。
+    /// - Parameters:
+    ///   - directory: 待处理消息目录（pending_messages）
+    ///   - now: 当前时间，用于判定消息是否过期（注入以便测试）
+    ///   - fileManager: 文件管理器（注入以便测试）
+    ///   - archive: 把有效消息写入存储、并清理存储内已过期消息。
+    ///     返回 `true` 表示存储发生变更；**抛出异常表示写入失败**，此时有效消息文件会被保留以便重试。
+    /// - Returns: 各类文件处理数量的统计结果。
+    @discardableResult
+    static func importPendingMessages(
+        in directory: URL,
+        now: Date,
+        fileManager: FileManager = .default,
+        archive: (_ messages: [Message]) throws -> Bool
+    ) -> Result {
+        var result = Result()
+
+        guard fileManager.fileExists(atPath: directory.path),
+              let fileUrls = try? fileManager.contentsOfDirectory(
+                  at: directory,
+                  includingPropertiesForKeys: nil,
+                  options: [.skipsHiddenFiles]
+              )
+        else {
+            return result
+        }
+
+        let plistFiles = fileUrls.filter { $0.pathExtension == "plist" }
+
+        // 分类：坏文件 / 已过期 / 有效（有效消息与其文件一一对应）
+        var corruptFiles: [URL] = []
+        var expiredFiles: [URL] = []
+        var validMessages: [Message] = []
+        var validFiles: [URL] = []
+
+        for plistUrl in plistFiles {
+            guard let dict = NSDictionary(contentsOf: plistUrl) as? [String: Any] else {
+                corruptFiles.append(plistUrl)
+                continue
+            }
+            let message = Message(dict: dict)
+            if let expireDate = message.expireDate, expireDate <= now {
+                expiredFiles.append(plistUrl)
+                continue
+            }
+            validMessages.append(message)
+            validFiles.append(plistUrl)
+        }
+
+        // 坏文件、过期文件：按可预期方式清理，与入库成败无关，不拖累正常消息的清理节奏
+        for url in corruptFiles {
+            if (try? fileManager.removeItem(at: url)) != nil {
+                result.deletedCorruptCount += 1
+            }
+        }
+        for url in expiredFiles {
+            if (try? fileManager.removeItem(at: url)) != nil {
+                result.deletedExpiredCount += 1
+            }
+        }
+
+        // 有效消息：入库成功才删除对应文件；失败则全部保留等待下次重试
+        if validMessages.isEmpty {
+            // 没有新消息，但仍尝试让 archive 清理存储内已过期消息；失败也无文件受影响
+            if let changed = try? archive([]) {
+                result.didChangeStore = changed
+            }
+        } else {
+            do {
+                let changed = try archive(validMessages)
+                result.importedCount = validMessages.count
+                result.didChangeStore = changed
+                for url in validFiles {
+                    try? fileManager.removeItem(at: url)
+                }
+            } catch {
+                // 入库失败（如数据库短暂异常），保留有效文件等待下次重试
+                result.retainedCount = validFiles.count
+            }
+        }
+
+        return result
     }
 }
