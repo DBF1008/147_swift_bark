@@ -35,19 +35,8 @@ class MessageSettingsViewModel: ViewModel, ViewModelType {
         let restoreSuccess = input
             .restoreAction
             .compactMap { data -> Void? in
-                guard let json = try? JSON(data: data), let arr = json.array else {
+                guard MessageImportService.importMessages(from: data) != nil else {
                     return nil
-                }
-                guard let realm = try? Realm() else {
-                    return nil
-                }
-                try? realm.write {
-                    for message in arr {
-                        guard let messageObject = Message(json: message) else {
-                            continue
-                        }
-                        realm.add(messageObject, update: .modified)
-                    }
                 }
                 return ()
             }.asObservable().share()
