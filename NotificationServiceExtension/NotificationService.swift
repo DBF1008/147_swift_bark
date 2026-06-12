@@ -24,9 +24,11 @@ class NotificationService: UNNotificationServiceExtension {
             
             // 所有的 processor 按顺序从上往下对推送进行处理
             // ciphertext 需要放在最前面，有可能所有的推送数据都在密文里
+            // group 紧跟 ciphertext，统一把 group 同步到 threadIdentifier，供后面的分组/会话样式/静音使用
             // icon 放在最后面，游戏模式下可能会超时，超时后后面的 processor 就没机会运行了。
             let processors: [NotificationContentProcessorItem] = [
                 .ciphertext,
+                .group,
                 .markdown,
                 .level,
                 .badge,

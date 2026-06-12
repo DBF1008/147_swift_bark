@@ -153,6 +153,10 @@
 		06BCAE572CDB19420092867A /* GroupMuteSettingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BCAE552CDB19260092867A /* GroupMuteSettingManager.swift */; };
 		06BCAE582CDB19420092867A /* GroupMuteSettingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BCAE552CDB19260092867A /* GroupMuteSettingManager.swift */; };
 		06BCAE5B2CDB25120092867A /* MuteProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BCAE5A2CDB25120092867A /* MuteProcessor.swift */; };
+		06A1000000000000000000B1 /* GroupProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1000000000000000000F1 /* GroupProcessor.swift */; };
+		06A1000000000000000000B2 /* UNMutableNotificationContent+Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1000000000000000000F2 /* UNMutableNotificationContent+Group.swift */; };
+		06A1000000000000000000B3 /* UNMutableNotificationContent+Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1000000000000000000F2 /* UNMutableNotificationContent+Group.swift */; };
+		06A1000000000000000000B4 /* GroupProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1000000000000000000F3 /* GroupProcessorTests.swift */; };
 		06BD4DAA2901352E003364DB /* Object+Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BD4DA92901352E003364DB /* Object+Dictionary.swift */; };
 		06BE84042E6EAE7100E6F856 /* InsetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BE84032E6EAE7100E6F856 /* InsetView.swift */; };
 		06C2CF232685B88D0034B127 /* TextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C2CF222685B88D0034B127 /* TextCell.swift */; };
@@ -428,6 +432,9 @@
 		06E62C102D670F5D004DC82B /* PushToCurrentIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushToCurrentIntent.swift; sourceTree = "<group>"; };
 		06E944672C06E40600AC86AB /* NotificationContentProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationContentProcessor.swift; sourceTree = "<group>"; };
 		06E944692C06E4A200AC86AB /* CiphertextProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CiphertextProcessor.swift; sourceTree = "<group>"; };
+		06A1000000000000000000F1 /* GroupProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupProcessor.swift; sourceTree = "<group>"; };
+		06A1000000000000000000F2 /* UNMutableNotificationContent+Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNMutableNotificationContent+Group.swift"; sourceTree = "<group>"; };
+		06A1000000000000000000F3 /* GroupProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupProcessorTests.swift; sourceTree = "<group>"; };
 		06E9446C2C06FEC900AC86AB /* LevelProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelProcessor.swift; sourceTree = "<group>"; };
 		06E9446E2C06FF1E00AC86AB /* BadgeProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeProcessor.swift; sourceTree = "<group>"; };
 		06E944702C06FF4C00AC86AB /* AutoCopyProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoCopyProcessor.swift; sourceTree = "<group>"; };
@@ -692,6 +699,7 @@
 				066B10002F73F00100C4680E /* WidgetHistoryModels.swift */,
 				06697FED2F70ED9600C4680E /* WidgetHistorySnapshotStore.swift */,
 				06697FF52F70ED9600C4680E /* WidgetHistorySnapshotSupport.swift */,
+				06A1000000000000000000F2 /* UNMutableNotificationContent+Group.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -792,6 +800,7 @@
 				06E944792C0704E500AC86AB /* ImageDownloader.swift */,
 				06BCAE5A2CDB25120092867A /* MuteProcessor.swift */,
 				069C6CA32ED03C72007244BB /* MarkdownProcessor.swift */,
+				06A1000000000000000000F1 /* GroupProcessor.swift */,
 			);
 			path = Processor;
 			sourceTree = "<group>";
@@ -803,6 +812,7 @@
 				06EE1FD426843E9300586708 /* Info.plist */,
 				063B909A272149BF00431EC2 /* HomeViewModelTests.swift */,
 				068A4B952D2E11CD00982449 /* MessageDeleteTimeRangeTest.swift */,
+				06A1000000000000000000F3 /* GroupProcessorTests.swift */,
 			);
 			path = BarkTests;
 			sourceTree = "<group>";
@@ -1491,6 +1501,8 @@
 				06E944712C06FF4C00AC86AB /* AutoCopyProcessor.swift in Sources */,
 				0687F2A92CCB791A00B2A52F /* UIFont+Extension.swift in Sources */,
 				06F08EA829B1DE0A006AB9CA /* Error+Extension.swift in Sources */,
+				06A1000000000000000000B1 /* GroupProcessor.swift in Sources */,
+				06A1000000000000000000B2 /* UNMutableNotificationContent+Group.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1501,6 +1513,8 @@
 				068A4B962D2E11CD00982449 /* MessageDeleteTimeRangeTest.swift in Sources */,
 				06EE1FD326843E9300586708 /* BarkTests.swift in Sources */,
 				063B909B272149BF00431EC2 /* HomeViewModelTests.swift in Sources */,
+				06A1000000000000000000B3 /* UNMutableNotificationContent+Group.swift in Sources */,
+				06A1000000000000000000B4 /* GroupProcessorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

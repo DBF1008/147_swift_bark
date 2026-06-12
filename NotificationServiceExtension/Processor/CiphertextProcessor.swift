@@ -35,9 +35,7 @@ class CiphertextProcessor: NotificationContentProcessor {
                 bestAttemptContent.body = body
                 alert["body"] = body
             }
-            if let group = map["group"] as? String {
-                bestAttemptContent.threadIdentifier = group
-            }
+            // group 不在此设置 threadIdentifier，统一由 GroupProcessor 从 userInfo["group"] 同步，保证明文/密文一致
             if var sound = map["sound"] as? String {
                 if !sound.hasSuffix(".caf") {
                     sound = "\(sound).caf"

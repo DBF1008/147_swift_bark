@@ -20,7 +20,8 @@ enum NotificationContentProcessorItem {
     case call
     case mute
     case markdown
-    
+    case group
+
     var processor: NotificationContentProcessor {
         switch self {
         case .ciphertext:
@@ -43,6 +44,8 @@ enum NotificationContentProcessorItem {
             return MuteProcessor()
         case .markdown:
             return MarkdownProcessor()
+        case .group:
+            return GroupProcessor()
         }
     }
 }
