@@ -24,7 +24,8 @@ class ArchiveProcessor: NotificationContentProcessor {
             let subtitle = alert?["subtitle"] as? String
             let body = alert?["body"] as? String
             let url = userInfo["url"] as? String
-            let group = userInfo["group"] as? String
+            let group = (userInfo["group"] as? String)
+                ?? (bestAttemptContent.threadIdentifier.isEmpty ? nil : bestAttemptContent.threadIdentifier)
             let image = userInfo["image"] as? String
             let id = userInfo["id"] as? String
             let markdown = userInfo["markdown"] as? String

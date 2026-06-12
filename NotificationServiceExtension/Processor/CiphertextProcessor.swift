@@ -14,6 +14,11 @@ class CiphertextProcessor: NotificationContentProcessor {
     func process(identifier: String, content bestAttemptContent: UNMutableNotificationContent) async throws -> UNMutableNotificationContent {
         var userInfo = bestAttemptContent.userInfo
         guard let ciphertext = userInfo["ciphertext"] as? String else {
+            // 明文推送：确保 group → threadIdentifier 一致，
+            // 使通知分组、头像会话样式和静音规则都按同一个组生效
+            if let group = userInfo["group"] as? String, !group.isEmpty {
+                bestAttemptContent.threadIdentifier = group
+            }
             return bestAttemptContent
         }
         
